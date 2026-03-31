@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>History</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+}
+
+.container {
+    padding: 30px;
+}
+
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2> Your Resume History</h2>
+    <div id="historyContainer"></div>
+</div>
+
+<script>
+const user_id = localStorage.getItem("user_id");
+
+if (!user_id) {
+    alert("Login required");
+    window.location.href = "/login-page";
+}
+
+async function loadHistory() {
+    const res = await fetch(`http://127.0.0.1:5000/history/${user_id}`);
+    const data = await res.json();
+
+    const container = document.getElementById("historyContainer");
+
+    if (data.length === 0) {
+        container.innerHTML = "<p>No history found</p>";
+        return;
+    }
+
+    container.innerHTML = data.map(item => `
+        <div class="card">
+            <h3>${item.predicted_role}</h3>
+            <p><strong>Score:</strong> ${item.score}%</p>
+            <p><strong>Matched:</strong> ${item.matched_skills}</p>
+            <p><strong>Missing:</strong> ${item.missing_skills}</p>
+            <p><small>${item.created_at}</small></p>
+        </div>
+    `).join("");
+}
+
+loadHistory();
+</script>
+
+</body>
+</html>

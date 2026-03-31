@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up - HireMatch</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .signup-container {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        width: 350px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        outline: none;
+        font-size: 14px;
+    }
+
+    input:focus {
+        border-color: #43e97b;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #43e97b;
+        border: none;
+        color: white;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #2ecc71;
+    }
+
+    .login-link {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .login-link a {
+        color: #43e97b;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .error {
+        color: red;
+        font-size: 13px;
+        margin-top: 10px;
+    }
+
+    .success {
+        color: green;
+        font-size: 13px;
+        margin-top: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="signup-container">
+
+    <h2> Sign Up</h2>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="signupUser()">Create Account</button>
+
+    <p class="error" id="errorMsg"></p>
+    <p class="success" id="successMsg"></p>
+
+    <div class="login-link">
+        Already have an account? <a href="/login-page">Login</a>
+    </div>
+
+</div>
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>

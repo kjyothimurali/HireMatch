@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HireMatch</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        /* GLASS CARD */
+        .container {
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* TITLE */
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        /* BUTTONS */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* LOGIN BUTTON */
+        .login {
+            background: rgba(79, 172, 254, 0.8);
+            color: white;
+        }
+
+        .login:hover {
+            background: rgba(0, 198, 255, 1);
+        }
+
+        /* SIGNUP BUTTON */
+        .signup {
+            background: rgba(67, 233, 123, 0.8);
+            color: white;
+        }
+
+        .signup:hover {
+            background: rgba(46, 204, 113, 1);
+        }
+
+        /* SMALL TEXT */
+        .footer {
+            margin-top: 15px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1> HireMatch</h1>
+        <p>AI Resume & Job Analyzer</p> <button class="btn login" onclick="goLogin()"> Login</button> <button
+            class="btn signup" onclick="goSignup()"> Sign Up</button>
+        <div class="footer"> Smart Career Guidance Powered by AI </div>
+    </div>
+    <script> // 🔥 AUTO REDIRECT IF LOGGED IN if (localStorage.getItem("user_id")) { window.location.href = "/home"; } function goLogin() { window.location.href = "/login-page"; } function goSignup() { window.location.href = "/signup-page"; } </script>
+</body>
+
+</html>
