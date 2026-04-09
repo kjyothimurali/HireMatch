@@ -1,9 +1,10 @@
 import torch
 import numpy as np
-from transformers import DistilBertForSequenceClassification, AutoTokenizer
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 torch.set_num_threads(1)
+import os
 
-
+HF_TOKEN = os.getenv("HF_TOKEN")
 MODEL_NAME = "jyothimurali/hirematch-model"
 
 model = None
@@ -20,11 +21,12 @@ def load_model():
         print("🔄 Loading model...")
 
         try:
-            model = DistilBertForSequenceClassification.from_pretrained(
+            model = AutoModelForSequenceClassification.from_pretrained(
                 MODEL_NAME,
+                token=HF_TOKEN,
                 low_cpu_mem_usage=True   # 🔥 VERY IMPORTANT
             )
-            tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+            tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, token=HF_TOKEN)
 
             model.eval()
 
