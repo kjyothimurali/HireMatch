@@ -1,6 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from flask import render_template
 import os
 import bcrypt
 import pdfplumber
@@ -13,10 +12,6 @@ from skill_matcher import match_skills, suggest_improvements
 # ---------------- INIT ----------------
 app = Flask(__name__)
 CORS(app)
-
-# Absolute paths (IMPORTANT for deployment)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_PATH = os.path.join(BASE_DIR, "..", "frontend")
 
 # ---------------- AUTH APIs ----------------
 @app.route("/signup", methods=["POST"])
@@ -36,12 +31,13 @@ def signup():
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        # 🔥 FIX: column name = username (NOT name)
         cursor.execute(
-            "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
+            "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
             (name, email, hashed.decode('utf-8'))
         )
-        conn.commit()
 
+        conn.commit()
         cursor.close()
         conn.close()
 
@@ -75,7 +71,7 @@ def login():
             return jsonify({
                 "message": "Login successful",
                 "user_id": user["id"],
-                "name": user["name"]
+                "name": user["username"]  # 🔥 FIX
             })
         else:
             return jsonify({"error": "Invalid password"}), 401
@@ -86,7 +82,6 @@ def login():
 
 
 # ---------------- FRONTEND ROUTES ----------------
-
 @app.route("/")
 def start_page():
     return render_template("start.html")
@@ -115,6 +110,7 @@ def resume_page():
 def history_page():
     return render_template("history.html")
 
+
 # ---------------- PDF EXTRACT ----------------
 def extract_pdf(file):
     try:
@@ -136,24 +132,32 @@ def predict():
 
         if 'file' in request.files:
             file = request.files['file']
-            if file.filename == "":
-                return jsonify({"error": "Empty file"}), 400
             text = extract_pdf(file)
         else:
             data = request.json
             text = data.get("text", "").strip()
 
         if not text:
-            return jsonify({"error": "No text extracted"}), 400
+            return jsonify({"error": "No text"}), 400
 
-        sector = predict_sector(text)
+        # 🔥 SAFE MODEL CALL
+        try:
+            sector = predict_sector(text)
+        except Exception as e:
+            print("MODEL ERROR:", e)
+            return jsonify({"error": "Model failed"}), 500
 
         if sector == "Other / Unknown":
             return jsonify({"sector": sector})
 
-        title = predict_job_title(text, sector)
-        matched, missing = match_skills(text, sector)
-        suggestions = suggest_improvements(missing)
+        # 🔥 SAFE PIPELINE
+        try:
+            title = predict_job_title(text, sector)
+            matched, missing = match_skills(text, sector)
+            suggestions = suggest_improvements(missing)
+        except Exception as e:
+            print("PIPELINE ERROR:", e)
+            return jsonify({"error": "Processing failed"}), 500
 
         return jsonify({
             "sector": sector,
@@ -177,27 +181,20 @@ def resume_analysis():
 
         if 'file' in request.files:
             file = request.files['file']
-            if file.filename == "":
-                return jsonify({"error": "Empty file"}), 400
-
             text = extract_pdf(file)
             filename = file.filename
             sector = request.form.get("sector")
             role = request.form.get("role")
             user_id = request.form.get("user_id")
-
         else:
             data = request.json
-            text = data.get("text", "").strip()
+            text = data.get("text", "")
             sector = data.get("sector")
             role = data.get("role")
             user_id = data.get("user_id")
 
-        if not text:
-            return jsonify({"error": "No text found"}), 400
-
-        if not sector or not role:
-            return jsonify({"error": "Missing sector or role"}), 400
+        if not text or not sector or not role:
+            return jsonify({"error": "Missing data"}), 400
 
         matched, missing = match_skills(text, sector)
         suggestions = suggest_improvements(missing)
@@ -205,25 +202,19 @@ def resume_analysis():
         total = len(matched) + len(missing)
         score = int((len(matched) / total) * 100) if total > 0 else 0
 
-        matched_str = ", ".join(matched)
-        missing_str = ", ".join(missing)
-        skills_str = ", ".join(matched + missing)
-
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        query = """
-        INSERT INTO resume_analysis 
-        (filename, predicted_role, extracted_skills, matched_skills, missing_skills, score, user_id)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """
-
-        cursor.execute(query, (
+        cursor.execute("""
+            INSERT INTO resume_analysis 
+            (filename, predicted_role, extracted_skills, matched_skills, missing_skills, score, user_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (
             filename,
             role,
-            skills_str,
-            matched_str,
-            missing_str,
+            ", ".join(matched + missing),
+            ", ".join(matched),
+            ", ".join(missing),
             score,
             user_id
         ))
@@ -233,12 +224,10 @@ def resume_analysis():
         conn.close()
 
         return jsonify({
-            "sector": sector,
-            "role": role,
+            "score": score,
             "matched": matched,
             "missing": missing,
-            "suggestions": suggestions,
-            "score": score
+            "suggestions": suggestions
         })
 
     except Exception as e:
@@ -247,8 +236,8 @@ def resume_analysis():
 
 
 # ---------------- HISTORY ----------------
-@app.route("/history/<int:user_id>", methods=["GET"])
-def user_history(user_id):
+@app.route("/history/<int:user_id>")
+def history(user_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -270,8 +259,17 @@ def user_history(user_id):
         return jsonify({"error": str(e)}), 500
 
 
-# ---------------- RUN ----------------
+# ---------------- DEBUG ----------------
+@app.route("/test-db")
+def test_db():
+    try:
+        conn = get_db_connection()
+        return "DB Connected ✅"
+    except Exception as e:
+        return str(e)
 
+
+# ---------------- RUN ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

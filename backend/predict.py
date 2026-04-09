@@ -17,23 +17,30 @@ def load_model():
     global model, tokenizer
 
     if model is None:
-        print("🔄 Loading model from HuggingFace...")
+        print("🔄 Loading model...")
 
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        model = DistilBertForSequenceClassification.from_pretrained(
-            MODEL_NAME,
-            low_cpu_mem_usage=True 
-        )
+        try:
+            model = DistilBertForSequenceClassification.from_pretrained(
+                MODEL_NAME,
+                low_cpu_mem_usage=True   # 🔥 VERY IMPORTANT
+            )
+            tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-        model.eval()
-        print(" Model loaded successfully!")
+            model.eval()
 
+            print("✅ Model loaded")
 
+        except Exception as e:
+            print("MODEL LOAD ERROR:", e)
+            return False
+
+    return True
 # 🔍 Prediction function
 def predict_sector(text):
-    try:
-        load_model()  
+    if not load_model():
+        return "Model failed to load"
 
+    try:
         inputs = tokenizer(
             text,
             return_tensors="pt",
@@ -46,17 +53,14 @@ def predict_sector(text):
             outputs = model(**inputs)
             probs = torch.nn.functional.softmax(outputs.logits, dim=1).cpu().numpy()[0]
 
-        max_prob = np.max(probs)
-
-        # Confidence threshold
-        if max_prob < 0.3:
+        if np.max(probs) < 0.5:
             return "Other / Unknown"
 
         return labels[np.argmax(probs)]
 
     except Exception as e:
         print("PREDICTION ERROR:", e)
-        return "Error"
+        return "Prediction failed"
 
 
 # -------- TEST --------
