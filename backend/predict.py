@@ -1,6 +1,8 @@
 import torch
 import numpy as np
-from transformers import BertForSequenceClassification, AutoTokenizer
+from transformers import DistilBertForSequenceClassification, AutoTokenizer
+torch.set_num_threads(1)
+
 
 MODEL_NAME = "jyothimurali/hirematch-model"
 
@@ -18,7 +20,7 @@ def load_model():
         print("🔄 Loading model from HuggingFace...")
 
         tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        model = BertForSequenceClassification.from_pretrained(
+        model = DistilBertForSequenceClassification.from_pretrained(
             MODEL_NAME,
             low_cpu_mem_usage=True 
         )

@@ -1,9 +1,10 @@
 flask
 flask-cors
-torch
-transformers
 gunicorn
+transformers
+numpy
 bcrypt
 pdfplumber
-numpy
 mysql-connector-python
+torch==2.0.1+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
