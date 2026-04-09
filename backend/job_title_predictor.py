@@ -4,7 +4,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import re
 
 # -------- LOAD DATA --------
-df = pd.read_csv("../data/final_dataset.csv")
+df = pd.read_csv("final_dataset.csv")
 
 def clean_title(title):
     title = str(title).lower()
