@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HireMatch — AI Career Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #04060f;
+  --glass-fill: rgba(255,255,255,0.055);
+  --glass-border: rgba(255,255,255,0.13);
+  --blue-a: #4facfe; --blue-b: #00f2fe;
+  --purple-a: #7c5cfc; --purple-b: #a78bfa;
+  --green-a: #43e97b; --green-b: #38f9d7;
+  --text-1: #f0f4ff;
+  --text-2: rgba(210,220,255,0.72);
+  --text-3: rgba(180,195,230,0.50);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex; justify-content: center; align-items: center;
+  overflow: hidden;
+  background: var(--bg-deep);
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 18%  8%, rgba(102,60,210,0.52) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 82% 82%, rgba(15,110,210,0.44) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(79,172,254,0.15) 0%, transparent 70%),
+    var(--bg-deep);
+  animation: meshDrift 16s ease-in-out infinite alternate;
+}
+@keyframes meshDrift {
+  0%   { opacity:1;    transform:scale(1)    rotate(0deg);   }
+  50%  { opacity:0.82; transform:scale(1.04) rotate(0.8deg); }
+  100% { opacity:1;    transform:scale(1)    rotate(0deg);   }
+}
+.orb { position:fixed; border-radius:50%; filter:blur(80px); opacity:0.32; animation:floatOrb 18s ease-in-out infinite; z-index:0; pointer-events:none; }
+.orb-1 { width:400px;height:400px; background:radial-gradient(circle,#7c3aed,#4f46e5); top:-80px; left:-100px; animation-delay:0s; }
+.orb-2 { width:320px;height:320px; background:radial-gradient(circle,#0ea5e9,#06b6d4); bottom:-60px; right:-80px; animation-delay:-6s; }
+.orb-3 { width:240px;height:240px; background:radial-gradient(circle,#10b981,#34d399); bottom:20%; left:8%; animation-delay:-12s; }
+@keyframes floatOrb {
+  0%   { transform:translate(0,0)       scale(1);    }
+  33%  { transform:translate(28px,-36px) scale(1.06); }
+  66%  { transform:translate(-18px,18px) scale(0.95); }
+  100% { transform:translate(0,0)       scale(1);    }
+}
+.particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.particle  { position:absolute; width:2px; height:2px; border-radius:50%; background:rgba(255,255,255,0.45); animation:riseUp linear infinite; }
+@keyframes riseUp {
+  0%  { transform:translateY(100vh) scale(0);   opacity:0; }
+  10% { opacity:1; } 90% { opacity:0.5; }
+  100%{ transform:translateY(-10vh) scale(1.4); opacity:0; }
+}
+/* CARD */
+.container {
+  position:relative; z-index:10;
+  width:430px; max-width:94vw;
+  padding:54px 46px 46px;
+  text-align:center;
+  border-radius:32px;
+  background:var(--glass-fill);
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid var(--glass-border);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04) inset,
+    0 2px 0 rgba(255,255,255,0.11) inset,
+    0 40px 80px rgba(0,0,0,0.55),
+    0 0 60px rgba(79,172,254,0.07);
+  color:var(--text-1);
+  animation:cardReveal 0.9s cubic-bezier(0.16,1,0.3,1) both;
+  transition:transform 0.45s cubic-bezier(0.23,1,0.32,1), box-shadow 0.45s ease;
+}
+@keyframes cardReveal {
+  from { opacity:0; transform:translateY(34px) scale(0.96); }
+  to   { opacity:1; transform:translateY(0)    scale(1);    }
+}
+.container:hover {
+  transform:translateY(-5px) scale(1.01);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06) inset,
+    0 2px 0 rgba(255,255,255,0.13) inset,
+    0 55px 90px rgba(0,0,0,0.58),
+    0 0 75px rgba(79,172,254,0.13);
+}
+.container::after {
+  content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.48) 40%,rgba(255,255,255,0.48) 60%,transparent);
+  border-radius:1px;
+}
+.corner-tl,.corner-br { position:absolute; width:20px; height:20px; border-color:rgba(255,255,255,0.22); border-style:solid; pointer-events:none; }
+.corner-tl { top:15px; left:15px;   border-width:1.5px 0 0 1.5px; border-radius:4px 0 0 0; }
+.corner-br { bottom:15px; right:15px; border-width:0 1.5px 1.5px 0; border-radius:0 0 4px 0; }
+/* LOGO BADGE */
+.logo-badge {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:76px; height:76px; border-radius:22px;
+  background:linear-gradient(145deg,rgba(79,172,254,0.16),rgba(124,92,252,0.26));
+  border:1px solid rgba(255,255,255,0.17);
+  margin-bottom:22px;
+  box-shadow:0 8px 26px rgba(79,172,254,0.20), 0 0 0 4px rgba(79,172,254,0.05);
+  animation:badgePop 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+@keyframes badgePop {
+  from { opacity:0; transform:scale(0.6) rotate(-10deg); }
+  to   { opacity:1; transform:scale(1)   rotate(0deg);   }
+}
+.tagline { font-size:11px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:var(--blue-b); opacity:0.85; margin-bottom:7px; animation:textReveal 0.7s ease 0.45s both; }
+h1 { font-family:'Syne',sans-serif; font-size:42px; font-weight:800; letter-spacing:-0.5px; line-height:1.1; margin-bottom:10px; background:linear-gradient(135deg,#ffffff 30%,rgba(185,210,255,0.82)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:textReveal 0.7s ease 0.35s both; }
+p  { font-size:14.5px; font-weight:300; color:var(--text-2); opacity:0.75; line-height:1.65; margin-bottom:36px; animation:textReveal 0.7s ease 0.50s both; }
+@keyframes textReveal { from{opacity:0;transform:translateY(13px);}to{opacity:1;transform:translateY(0);} }
+.divider { height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.11),transparent); margin-bottom:24px; animation:textReveal 0.7s ease 0.55s both; }
+/* BUTTONS */
+.btn-wrap { display:flex; flex-direction:column; gap:13px; animation:textReveal 0.7s ease 0.6s both; }
+.btn {
+  width:100%; padding:14px 20px;
+  border-radius:14px; border:none;
+  font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500;
+  cursor:pointer; letter-spacing:0.3px;
+  transition:transform 0.26s cubic-bezier(0.23,1,0.32,1), box-shadow 0.26s ease, filter 0.26s ease;
+  position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.btn::before { content:''; position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent); transition:left 0.5s ease; pointer-events:none; }
+.btn:hover::before { left:160%; }
+.btn-icon { width:17px; height:17px; flex-shrink:0; }
+.login  { background:linear-gradient(135deg,#4facfe 0%,#00d4ff 60%,#00f2fe 100%); color:#011a2e; box-shadow:0 4px 18px rgba(0,198,255,0.34), 0 1px 0 rgba(255,255,255,0.4) inset; }
+.login:hover  { transform:translateY(-2px) scale(1.025); box-shadow:0 8px 30px rgba(0,198,255,0.52), 0 0 55px rgba(0,198,255,0.18); filter:brightness(1.06); }
+.login:active { transform:translateY(0) scale(0.99); }
+.signup  { background:linear-gradient(135deg,#43e97b 0%,#2dd47a 60%,#38f9d7 100%); color:#011f10; box-shadow:0 4px 18px rgba(46,204,113,0.34), 0 1px 0 rgba(255,255,255,0.4) inset; }
+.signup:hover  { transform:translateY(-2px) scale(1.025); box-shadow:0 8px 30px rgba(46,204,113,0.52), 0 0 55px rgba(56,249,215,0.14); filter:brightness(1.06); }
+.signup:active { transform:translateY(0) scale(0.99); }
+/* FOOTER */
+.footer { margin-top:26px; font-size:12px; font-weight:400; letter-spacing:0.4px; color:var(--text-3); display:flex; align-items:center; justify-content:center; gap:8px; animation:textReveal 0.7s ease 0.72s both; }
+.footer::before,.footer::after { content:''; width:26px; height:1px; background:rgba(255,255,255,0.13); }
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="particles" id="particles"></div>
+
+<div class="container">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+
+  <div class="logo-badge">
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#4facfe"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
+        <linearGradient id="cg" x1="21" y1="21" x2="41" y2="41" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#43e97b"/><stop offset="100%" stop-color="#38f9d7"/></linearGradient>
+      </defs>
+      <circle cx="17.5" cy="10.5" r="5.8" fill="url(#pg)" opacity="0.95"/>
+      <path d="M4 33 C4 23.5 31 23.5 31 33" stroke="url(#pg)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.95"/>
+      <circle cx="31.5" cy="30.5" r="9" fill="url(#cg)"/>
+      <path d="M26.5 30.5 L30 34 L36.5 26" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div class="tagline">Career Intelligence</div>
+  <h1>HireMatch</h1>
+  <p>AI-Powered Job Title Identification System</p>
+
+  <div class="divider"></div>
+
+  <div class="btn-wrap">
+    <button class="btn login" onclick="goLogin()">
+      <svg class="btn-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="9" height="12" rx="2" stroke="#011a2e" stroke-width="1.7"/><path d="M11 6.5L16 9L11 11.5" stroke="#011a2e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="16" y1="9" x2="7" y2="9" stroke="#011a2e" stroke-width="1.7" stroke-linecap="round"/></svg>
+      Login
+    </button>
+    <button class="btn signup" onclick="goSignup()">
+      <svg class="btn-icon" viewBox="0 0 18 18" fill="none"><circle cx="7.5" cy="5.5" r="3.5" stroke="#012215" stroke-width="1.7"/><path d="M1 16 C1 11 14 11 14 16" stroke="#012215" stroke-width="1.7" stroke-linecap="round" fill="none"/><line x1="15" y1="6" x2="15" y2="12" stroke="#012215" stroke-width="1.9" stroke-linecap="round"/><line x1="12" y1="9" x2="18" y2="9" stroke="#012215" stroke-width="1.9" stroke-linecap="round"/></svg>
+      Sign Up
+    </button>
+  </div>
+
+  <div class="footer">Smart Career Guidance Powered by AI</div>
+</div>
+
+<script>
+if (localStorage.getItem("user_id")) { window.location.href = "/home"; }
+function goLogin()  { window.location.href = "/login-page"; }
+function goSignup() { window.location.href = "/signup-page"; }
+
+(function(){
+  const c = document.getElementById('particles');
+  for(let i=0;i<38;i++){
+    const p=document.createElement('div'); p.className='particle';
+    p.style.left=(Math.random()*100)+'vw';
+    p.style.width=p.style.height=(Math.random()*2+1)+'px';
+    p.style.animationDuration=(Math.random()*14+8)+'s';
+    p.style.animationDelay=(Math.random()*14)+'s';
+    p.style.opacity=Math.random()*0.5+0.2;
+    c.appendChild(p);
+  }
+})();
+</script>
+</body>
+</html>

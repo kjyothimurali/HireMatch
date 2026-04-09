@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — HireMatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep:#04060f; --glass-fill:rgba(255,255,255,0.055); --glass-border:rgba(255,255,255,0.13);
+  --blue-a:#4facfe; --blue-b:#00f2fe; --text-1:#f0f4ff; --text-2:rgba(210,220,255,0.72); --text-3:rgba(180,195,230,0.50);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;background:var(--bg-deep);position:relative;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 75% 60% at 15% 10%,rgba(79,172,254,0.38) 0%,transparent 58%),radial-gradient(ellipse 60% 55% at 85% 85%,rgba(99,102,241,0.42) 0%,transparent 60%),var(--bg-deep);animation:meshDrift 16s ease-in-out infinite alternate;}
+@keyframes meshDrift{0%{opacity:1;transform:scale(1) rotate(0deg);}50%{opacity:0.82;transform:scale(1.04) rotate(0.8deg);}100%{opacity:1;transform:scale(1) rotate(0deg);}}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:0.30;animation:floatOrb 18s ease-in-out infinite;z-index:0;pointer-events:none;}
+.orb-1{width:380px;height:380px;background:radial-gradient(circle,#0ea5e9,#4f46e5);top:-80px;left:-80px;animation-delay:0s;}
+.orb-2{width:300px;height:300px;background:radial-gradient(circle,#6366f1,#a78bfa);bottom:-50px;right:-60px;animation-delay:-7s;}
+@keyframes floatOrb{0%{transform:translate(0,0) scale(1);}50%{transform:translate(24px,-32px) scale(1.05);}100%{transform:translate(0,0) scale(1);}}
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(255,255,255,0.4);animation:riseUp linear infinite;}
+@keyframes riseUp{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:1;}90%{opacity:0.5;}100%{transform:translateY(-10vh) scale(1.4);opacity:0;}}
+/* CARD */
+.auth-card{position:relative;z-index:10;width:400px;max-width:94vw;padding:50px 42px 42px;border-radius:28px;background:var(--glass-fill);backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);border:1px solid var(--glass-border);box-shadow:0 0 0 1px rgba(255,255,255,0.04) inset,0 2px 0 rgba(255,255,255,0.10) inset,0 40px 80px rgba(0,0,0,0.52),0 0 55px rgba(79,172,254,0.06);color:var(--text-1);animation:cardReveal 0.85s cubic-bezier(0.16,1,0.3,1) both;}
+@keyframes cardReveal{from{opacity:0;transform:translateY(30px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.auth-card::after{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.45) 40%,rgba(255,255,255,0.45) 60%,transparent);border-radius:1px;}
+.corner-tl,.corner-br{position:absolute;width:18px;height:18px;border-color:rgba(255,255,255,0.20);border-style:solid;pointer-events:none;}
+.corner-tl{top:14px;left:14px;border-width:1.5px 0 0 1.5px;border-radius:3px 0 0 0;}
+.corner-br{bottom:14px;right:14px;border-width:0 1.5px 1.5px 0;border-radius:0 0 3px 0;}
+/* LOGO ROW */
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;animation:textReveal 0.7s ease 0.15s both;}
+.logo-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(145deg,rgba(79,172,254,0.20),rgba(124,92,252,0.30));border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;}
+.logo-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;background:linear-gradient(135deg,#ffffff 30%,rgba(185,210,255,0.82));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+/* HEADING */
+.auth-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;text-align:center;margin-bottom:6px;background:linear-gradient(135deg,#ffffff 30%,rgba(180,210,255,0.80));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:textReveal 0.7s ease 0.25s both;}
+.auth-sub{font-size:13.5px;font-weight:300;color:var(--text-3);text-align:center;margin-bottom:30px;animation:textReveal 0.7s ease 0.32s both;}
+@keyframes textReveal{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+/* INPUTS */
+.field{margin-bottom:14px;animation:textReveal 0.7s ease var(--d,0.4s) both;}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-3);margin-bottom:7px;}
+.field input{display:block;width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:var(--text-1);font-family:'DM Sans',sans-serif;font-size:14.5px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.field input::placeholder{color:var(--text-3);}
+.field input:focus{border-color:rgba(79,172,254,0.55);box-shadow:0 0 0 3px rgba(79,172,254,0.12);}
+/* BUTTON */
+.auth-btn{width:100%;padding:13px 20px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;position:relative;overflow:hidden;background:linear-gradient(135deg,#4facfe 0%,#00d4ff 60%,#00f2fe 100%);color:#011a2e;box-shadow:0 4px 18px rgba(0,198,255,0.34),0 1px 0 rgba(255,255,255,0.4) inset;transition:transform 0.26s cubic-bezier(0.23,1,0.32,1),box-shadow 0.26s ease,filter 0.26s ease;margin-top:6px;animation:textReveal 0.7s ease 0.58s both;}
+.auth-btn::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent);transition:left 0.5s ease;pointer-events:none;}
+.auth-btn:hover::before{left:160%;}
+.auth-btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 28px rgba(0,198,255,0.50);filter:brightness(1.06);}
+.auth-btn:active{transform:translateY(0) scale(0.99);}
+/* ERROR */
+#errorMsg{color:#f87171;font-size:13px;margin-top:12px;min-height:18px;text-align:center;animation:textReveal 0.4s ease both;}
+/* LINK */
+.auth-link{text-align:center;margin-top:22px;font-size:13.5px;color:var(--text-3);animation:textReveal 0.7s ease 0.65s both;}
+.auth-link a{color:var(--blue-a);text-decoration:none;font-weight:500;transition:color 0.2s;}
+.auth-link a:hover{color:var(--blue-b);}
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="particles" id="particles"></div>
+
+<div class="auth-card">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+
+  <div class="logo-row">
+    <div class="logo-icon">
+      <svg width="22" height="22" viewBox="0 0 44 44" fill="none"><defs><linearGradient id="pg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#4facfe"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient><linearGradient id="cg" x1="21" y1="21" x2="41" y2="41" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#43e97b"/><stop offset="100%" stop-color="#38f9d7"/></linearGradient></defs><circle cx="17.5" cy="10.5" r="5.8" fill="url(#pg)"/><path d="M4 33 C4 23.5 31 23.5 31 33" stroke="url(#pg)" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="31.5" cy="30.5" r="9" fill="url(#cg)"/><path d="M26.5 30.5 L30 34 L36.5 26" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <span class="logo-text">HireMatch</span>
+  </div>
+
+  <div class="auth-title">Welcome back</div>
+  <div class="auth-sub">Sign in to your account</div>
+
+  <div class="field" style="--d:0.40s">
+    <label>Email address</label>
+    <input type="email" id="email" placeholder="you@example.com">
+  </div>
+  <div class="field" style="--d:0.48s">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter your password">
+  </div>
+
+  <button class="auth-btn" onclick="loginUser()">Sign In</button>
+
+  <p id="errorMsg"></p>
+
+  <div class="auth-link">
+    Don't have an account? <a href="/signup-page">Create one</a>
+  </div>
+</div>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+(function(){const c=document.getElementById('particles');for(let i=0;i<28;i++){const p=document.createElement('div');p.className='particle';p.style.left=(Math.random()*100)+'vw';p.style.width=p.style.height=(Math.random()*2+1)+'px';p.style.animationDuration=(Math.random()*14+8)+'s';p.style.animationDelay=(Math.random()*14)+'s';p.style.opacity=Math.random()*0.4+0.15;c.appendChild(p);}})();
+</script>
+</body>
+</html>

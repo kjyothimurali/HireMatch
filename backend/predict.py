@@ -1,29 +1,50 @@
 import torch
 import numpy as np
-from transformers import BertForSequenceClassification
-from transformers import AutoTokenizer
-# Load model
-model = BertForSequenceClassification.from_pretrained("models")
+from transformers import BertForSequenceClassification, AutoTokenizer
 
-tokenizer = AutoTokenizer.from_pretrained("models")
+# 🔥 Load model from HuggingFace (NOT local)
+MODEL_NAME = "jyothimurali/hirematch-model"
+
+print("🔄 Loading model from HuggingFace...")
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = BertForSequenceClassification.from_pretrained(MODEL_NAME)
+
+# Set model to evaluation mode
+model.eval()
+print("✅ Model loaded successfully!")
+
+# Labels
 labels = ["Finance", "Healthcare", "IT", "Sales & Marketing"]
 
+
 def predict_sector(text):
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=256)
-    
-    outputs = model(**inputs)
-    probs = torch.nn.functional.softmax(outputs.logits, dim=1).detach().numpy()[0]
+    try:
+        inputs = tokenizer(
+            text,
+            return_tensors="pt",
+            truncation=True,
+            padding=True,
+            max_length=256
+        )
 
-    max_prob = np.max(probs)
+        with torch.no_grad():
+            outputs = model(**inputs)
+            probs = torch.nn.functional.softmax(outputs.logits, dim=1).cpu().numpy()[0]
 
-    # 🔥 Unknown detection
-    if max_prob < 0.5:
-        return "Other / Unknown"
+        max_prob = np.max(probs)
 
-    return labels[np.argmax(probs)]
+        # Confidence threshold
+        if max_prob < 0.5:
+            return "Other / Unknown"
+
+        return labels[np.argmax(probs)]
+
+    except Exception as e:
+        print("PREDICTION ERROR:", e)
+        return "Error"
 
 
 # -------- TEST --------
 if __name__ == "__main__":
-    text = "sample resume"
+    text = "Software engineer with Python and machine learning experience"
     print(predict_sector(text))
