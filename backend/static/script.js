@@ -17,7 +17,7 @@ async function signupUser() {
     }
 
     try {
-        const res = await fetch("http://127.0.0.1:5000/signup", {
+        const res = await fetch("/signup", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -56,7 +56,7 @@ async function loginUser() {
     }
 
     try {
-        const res = await fetch("http://127.0.0.1:5000/login", {
+        const res = await fetch("/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -106,12 +106,12 @@ async function analyzeJob() {
             const formData = new FormData();
             formData.append("file", file);
 
-            response = await fetch("http://127.0.0.1:5000/predict", {
+            response = await fetch("/predict", {
                 method: "POST",
                 body: formData
             });
         } else {
-            response = await fetch("http://127.0.0.1:5000/predict", {
+            response = await fetch("/predict", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: textInput })
@@ -208,12 +208,12 @@ async function analyzeResume() {
             formData.append("sector", sector);
             formData.append("role", role);
 
-            response = await fetch("http://127.0.0.1:5000/resume", {
+            response = await fetch("/resume", {
                 method: "POST",
                 body: formData
             });
         } else {
-            response = await fetch("http://127.0.0.1:5000/resume", {
+            response = await fetch("/resume", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: textInput, sector, role, user_id })
@@ -232,7 +232,7 @@ async function analyzeResume() {
             const saveData = new FormData();
             saveData.append("resume", file);
 
-            await fetch("http://127.0.0.1:5000/analyze", {
+            await fetch("/analyze", {
                 method: "POST",
                 body: saveData
             });
