@@ -2,8 +2,7 @@ venv/
 __pycache__/
 *.pyc
 
-# ML Models
-backend/models/
+
 
 # Large datasets
 data/

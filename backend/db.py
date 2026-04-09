@@ -1,10 +1,12 @@
 import mysql.connector
+import os
 
 def get_db_connection():
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="chandu@1602",
-        database="hirematch"
+    return mysql.connector.connect(
+        host=os.environ.get("DB_HOST"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
+        database=os.environ.get("DB_NAME"),
+        port=int(os.environ.get("DB_PORT")),
+        auth_plugin='mysql_native_password'
     )
-    return connection
