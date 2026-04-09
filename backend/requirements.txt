@@ -6,3 +6,4 @@ gunicorn
 bcrypt
 pdfplumber
 numpy
+mysql-connector-python
