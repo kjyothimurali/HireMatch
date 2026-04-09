@@ -1,12 +1,16 @@
 flask
 flask-cors
 gunicorn
+
 numpy
+pandas
+scikit-learn
+
 bcrypt
 pdfplumber
 mysql-connector-python
+
 transformers
-pandas
 
 torch==2.11.0+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu
