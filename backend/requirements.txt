@@ -7,5 +7,5 @@ pdfplumber
 mysql-connector-python
 transformers
 
-torch==2.0.1+cpu
+torch==2.11.0+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu
