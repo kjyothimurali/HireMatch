@@ -31,9 +31,9 @@ def signup():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # 🔥 FIX: column name = username (NOT name)
+
         cursor.execute(
-            "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
+            "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
             (name, email, hashed.decode('utf-8'))
         )
 
@@ -71,7 +71,7 @@ def login():
             return jsonify({
                 "message": "Login successful",
                 "user_id": user["id"],
-                "name": user["username"]  # 🔥 FIX
+                "name": user["username"]  
             })
         else:
             return jsonify({"error": "Invalid password"}), 401
@@ -140,7 +140,7 @@ def predict():
         if not text:
             return jsonify({"error": "No text"}), 400
 
-        # 🔥 SAFE MODEL CALL
+       
         try:
             sector = predict_sector(text)
         except Exception as e:
@@ -150,7 +150,6 @@ def predict():
         if sector == "Other / Unknown":
             return jsonify({"sector": sector})
 
-        # 🔥 SAFE PIPELINE
         try:
             title = predict_job_title(text, sector)
             matched, missing = match_skills(text, sector)
@@ -264,7 +263,7 @@ def history(user_id):
 def test_db():
     try:
         conn = get_db_connection()
-        return "DB Connected ✅"
+        return "DB Connected"
     except Exception as e:
         return str(e)
 
