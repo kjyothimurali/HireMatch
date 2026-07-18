@@ -9,5 +9,6 @@ def get_db_connection():
         password=os.environ.get("DB_PASSWORD"),
         database=os.environ.get("DB_NAME"),
         port=int(os.environ.get("DB_PORT")),
-        ssl_disabled=False
+        ssl_disabled=False,
+        ssl_ca="ca.pem"
     )
