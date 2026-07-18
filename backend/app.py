@@ -127,36 +127,43 @@ def extract_pdf(file):
 # ---------------- JOB ANALYZER ----------------
 @app.route("/predict", methods=["POST"])
 def predict():
+    print("===== PREDICT API HIT =====")
+
     try:
         text = ""
 
         if 'file' in request.files:
+            print("PDF received")
             file = request.files['file']
             text = extract_pdf(file)
         else:
+            print("TEXT received")
             data = request.json
             text = data.get("text", "").strip()
 
+        print("TEXT LENGTH:", len(text))
+
         if not text:
+            print("No text found")
             return jsonify({"error": "No text"}), 400
 
-       
-        try:
-            sector = predict_sector(text)
-        except Exception as e:
-            print("MODEL ERROR:", e)
-            return jsonify({"error": "Model failed"}), 500
+        print("Calling sector model...")
+        sector = predict_sector(text)
+        print("Sector:", sector)
 
         if sector == "Other / Unknown":
             return jsonify({"sector": sector})
 
-        try:
-            title = predict_job_title(text, sector)
-            matched, missing = match_skills(text, sector)
-            suggestions = suggest_improvements(missing)
-        except Exception as e:
-            print("PIPELINE ERROR:", e)
-            return jsonify({"error": "Processing failed"}), 500
+        print("Calling job title model...")
+        title = predict_job_title(text, sector)
+
+        print("Matching skills...")
+        matched, missing = match_skills(text, sector)
+
+        print("Suggestions...")
+        suggestions = suggest_improvements(missing)
+
+        print("DONE")
 
         return jsonify({
             "sector": sector,
@@ -167,9 +174,9 @@ def predict():
         })
 
     except Exception as e:
-        print("PREDICT ERROR:", e)
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-
 
 # ---------------- RESUME ANALYSIS ----------------
 @app.route("/resume", methods=["POST"])
