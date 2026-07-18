@@ -227,17 +227,6 @@ async function analyzeResume() {
             return;
         }
 
-        /* ---------- STORE RESULT IN MYSQL ---------- */
-        if (file) {
-            const saveData = new FormData();
-            saveData.append("resume", file);
-
-            await fetch("/analyze", {
-                method: "POST",
-                body: saveData
-            });
-        }
-
         /* ---------- UI OUTPUT ---------- */
         document.getElementById("resumeResult").innerHTML = `
         <div class="result-card fade-in">
