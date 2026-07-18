@@ -69,11 +69,11 @@ async function loginUser() {
         if (data.error) {
             errorMsg.innerText = data.error;
         } else {
-            // 🔥 STORE USER DATA
+            
             localStorage.setItem("user_id", data.user_id);
             localStorage.setItem("user_name", data.name);
 
-            // 🔥 REDIRECT
+           
             window.location.href = "/home";
         }
 
