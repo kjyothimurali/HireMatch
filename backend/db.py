@@ -1,6 +1,7 @@
 import mysql.connector
 import os
 
+
 def get_db_connection():
     return mysql.connector.connect(
         host=os.environ.get("DB_HOST"),
@@ -8,5 +9,5 @@ def get_db_connection():
         password=os.environ.get("DB_PASSWORD"),
         database=os.environ.get("DB_NAME"),
         port=int(os.environ.get("DB_PORT")),
-        auth_plugin='mysql_native_password'
+        ssl_disabled=False
     )
